@@ -1,0 +1,50 @@
+﻿@model RequestData
+
+<h2>Ejercicio 5 - Formulario Inicial</h2>
+
+<div class="form-group">
+    @Html.TextBox("txtDataA", "", new { @class = "form-control mb-2", placeholder = "Ingresa dato 1" })  @* Helpers solicitados *@
+    @Html.TextBox("txtDataB", "", new { @class = "form-control mb-2", placeholder = "Ingresa dato 2" })
+    @Html.TextBox("txtDataC", "", new { @class = "form-control mb-2", placeholder = "Ingresa dato 3" })
+</div>
+
+<button id="btnAjax" class="btn btn-primary mb-2">Enviar Datos</button>
+
+<div id="respuesta" class="EstiloBAMSA" style="display:none;">
+    <h4>Datos Recibidos:</h4>
+
+    <ul id="listaRespuesta"></ul> @* Lista no ordenada solicitada *@
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#btnAjax').click(function () {
+
+                var jsonData = {
+                    dataA: $('#txtDataA').val(),
+                    dataB: $('#txtDataB').val(),
+                    dataC: $('#txtDataC').val()
+                }; 
+               
+                $.ajax({
+                    url: '@Url.Action("X", "N")',
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify(jsonData),
+                    success: function (response) {
+                        $('#listaRespuesta').empty(); // Limpiar la lista antes de agregar nuevos elementos
+                        response.forEach(function (item) {
+                            $('#listaRespuesta').append('<li>' + item + '</li>');
+                        });
+                        $('#respuesta').show(); // Mostrar la sección de respuesta
+                    },
+                    error: function () {
+                        alert('Error al enviar los datos.');
+                    }
+                });
+            });
+        });
+    </script>
+}
